@@ -36,7 +36,7 @@
                 android:layout_marginTop="12dp"
                 android:maxLines="3"
                 android:minLines="1"
-                android:text="TextView"
+                android:text="No details"
                 app:layout_constraintEnd_toStartOf="@+id/rating"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +78,9 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
-                android:text="TextView"
+                android:clickable="true"
+                android:text="Web link not available"
+                android:textColor="@android:color/holo_blue_dark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -91,7 +93,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
-                android:text="TextView"
+                android:text="No rating"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -102,7 +104,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="TextView"
+                android:text="No price information"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detail" />
 
@@ -124,7 +126,7 @@
                 android:layout_marginLeft="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:text="TextView"
+                android:text="No Hours information"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -135,7 +137,6 @@
                 android:layout_marginLeft="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:text="TextView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/reghours" />
 
@@ -189,7 +190,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:maxLines="2"
-                android:text="TextView"
+                android:text="Address information not available"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -203,7 +204,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:maxLines="2"
-                android:text="TextView"
+                android:text="Phone number not available"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/address" />
         </android.support.constraint.ConstraintLayout>
