@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,12 +27,13 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
     private GoogleMap mGoogleMap;
     FragmentManager fragmentManager;
+    DetailFragment detailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        DetailFragment detailFragment=new DetailFragment();
+        detailFragment=new DetailFragment();
         fragmentManager=getSupportFragmentManager();
         FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.frameLayout_detail,detailFragment);
@@ -66,19 +68,16 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
         BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.map_pin);
         LatLng center=new LatLng(47.60621,-122.33207);
+        LatLng place=new LatLng(detailFragment.getLat(),detailFragment.getLng());
+        Log.e("...",place.toString());
         mGoogleMap.addMarker(new MarkerOptions().position(center)
                 .title("Center").icon(icon));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 10));
-
-    }
-
-    public void addplaceMarker(double lat, double lng){
-        LatLng placelatlng=new LatLng(lat,lng);
-        mGoogleMap.addMarker(new MarkerOptions().position(placelatlng)
+        mGoogleMap.addMarker(new MarkerOptions().position(place)
                 .title("place"));
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placelatlng, 5));
-
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place, 5));
 
 
     }
+
+
 }

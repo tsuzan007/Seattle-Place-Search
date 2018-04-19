@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mark46.code.seattleplaces.DetailActivity;
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseDetail;
@@ -32,6 +33,18 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     TextView price;
     TextView regularhours;
     TextView weekendhours;
+    private  double lat;
+    private  double lng;
+
+    public double getLat() {
+        return lat;
+    }
+
+
+    public double getLng() {
+        return lng;
+    }
+
 
 
     @Nullable
@@ -65,6 +78,8 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     @Subscribe
     public void onPlaceDetailReceived(DetailApiEvent detailApiEvent){
         ResponseDetail.ResponseBean.VenueBean v=detailApiEvent.getDetailResponse().getResponse().getVenue();
+        this.lat=v.getLocation().getLat();
+        this.lng=v.getLocation().getLng();
         details.setText(v.getPage().getPageInfo().getDescription());
         name.setText(v.getName());
         weblink.setText(v.getCanonicalUrl());
@@ -79,9 +94,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
         price.setText("Currency:"+v.getPrice().getCurrency()+" \t "+"Price: "+v.getPrice().getMessage());
         regularhours.setText(v.getHours().getTimeframes().get(0).getDays()+": "+v.getHours().getTimeframes().get(0).getOpen().get(0).getRenderedTime());
         weekendhours.setText(v.getHours().getTimeframes().get(1).getDays()+": "+v.getHours().getTimeframes().get(1).getOpen().get(0).getRenderedTime());
-        ((DetailActivity) getActivity()).addplaceMarker(v.getLocation().getLat(),v.getLocation().getLng());
+
 
     }
+
 
     @Override
     public void onStop() {
