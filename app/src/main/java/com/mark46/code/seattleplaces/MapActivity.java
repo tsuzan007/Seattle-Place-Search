@@ -54,6 +54,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         message=findViewById(R.id.textView_mapLoading);
         presenterViewModel = ViewModelProviders.of(this).get(PresenterViewModel.class);
         mainPresenter = presenterViewModel.getMainPresenter();
+        mainPresenter.buildDagger();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         try {
