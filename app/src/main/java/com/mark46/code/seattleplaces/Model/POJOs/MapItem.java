@@ -31,7 +31,7 @@ public class MapItem implements ClusterItem {
 
     @Override
     public String getSnippet() {
-        return null;
+        return mSnippet;
     }
 
 }
