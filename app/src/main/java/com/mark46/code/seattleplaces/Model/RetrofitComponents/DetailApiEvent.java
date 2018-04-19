@@ -7,15 +7,15 @@ import java.util.List;
 
 public class DetailApiEvent {
 
-    private ResponseDetail.ResponseBean.VenueBean response;
+    private ResponseDetail response;
 
     //    Receives the List<Response> values from the FourSquareApiDataParser Event
-    public DetailApiEvent(ResponseDetail.ResponseBean.VenueBean response) {
+    public DetailApiEvent(ResponseDetail response) {
         this.response = response;
     }
 
     //    Method to return the List<Response> value received from FourSquareApiDataParser
-    public ResponseDetail.ResponseBean.VenueBean getDetailResponse() {
+    public ResponseDetail getDetailResponse() {
         return response;
     }
 }

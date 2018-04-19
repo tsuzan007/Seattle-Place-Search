@@ -73,7 +73,7 @@ public class FourSquareApiDataParser {
                 } else {
 
                     // Event that passes the response to presenter and make necessary update on UI
-                    EventBus.getDefault().post(new FourSquareApiEvent(response.body().getResponse().getVenues()));
+                    EventBus.getDefault().post(new FourSquareApiEvent(response.body()));
 
                 }
             }
@@ -111,7 +111,7 @@ public class FourSquareApiDataParser {
                 } else {
 
                     // Event that passes the response to presenter and make necessary update on UI
-                    EventBus.getDefault().post(new DetailApiEvent(response.body().getResponse().getVenue()));
+                    EventBus.getDefault().post(new DetailApiEvent(response.body()));
 
                 }
             }

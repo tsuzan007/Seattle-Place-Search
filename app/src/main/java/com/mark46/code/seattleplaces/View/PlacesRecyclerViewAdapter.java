@@ -1,5 +1,6 @@
 package com.mark46.code.seattleplaces.View;
 
+import android.location.Location;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,11 +24,15 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
 
     MainPresenter mainPresenter;
     private List<ResponseData.ResponseBean.VenuesBean> responseList;
+    Location loc1;
 
     // Getting the Data from the Network Response.
     public PlacesRecyclerViewAdapter(List<ResponseData.ResponseBean.VenuesBean> responseList, MainPresenter mainPresenter) {
         this.responseList = responseList;
         this.mainPresenter = mainPresenter;
+        loc1 = new Location("");
+        loc1.setLatitude(47.608013);
+        loc1.setLongitude(-122.335167);
     }
 
 
@@ -43,10 +48,15 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
     public void onBindViewHolder(PlacesRecyclerViewHolder holder, int position) {
         holder.name.setText(responseList.get(position).getName());
         holder.category.setText(responseList.get(position).getCategories().get(0).getName());
-        holder.distance.setText(responseList.get(position).getLocation().getAddress());
+        Location loc2 = new Location("");
+        loc2.setLatitude(responseList.get(position).getLocation().getLat());
+        loc2.setLongitude(responseList.get(position).getLocation().getLng());
+        float distanceInMeters = loc1.distanceTo(loc2);
+        holder.distance.setText("Distance from Seattle Center: "+loc1.distanceTo(loc2)+" meters");
+        holder.location.setText(responseList.get(position).getLocation().getFormattedAddress().toString());
         holder.id.setText(responseList.get(position).getId());
         Picasso.get()
-                .load(responseList.get(position).getCategories().get(0).getIcon().getPrefix())
+                .load("http://community.fmca.com/uploads/monthly_2018_04/S.png.2e1729558cca9308d3a80e066f8ad640.png")
                 .placeholder(android.R.drawable.ic_lock_idle_lock)
                 .error(android.R.drawable.stat_notify_error)
                 .into(holder.icon);

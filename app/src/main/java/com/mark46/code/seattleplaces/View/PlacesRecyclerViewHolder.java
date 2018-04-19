@@ -20,7 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class PlacesRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-    TextView name, category, distance, phone, id;
+    TextView name, category, distance, location, id;
     ImageView icon, favourite;
 
 
@@ -29,7 +29,7 @@ public class PlacesRecyclerViewHolder extends RecyclerView.ViewHolder {
         name= itemView.findViewById(R.id.name);
         category = itemView.findViewById(R.id.category);
         distance = itemView.findViewById(R.id.distance);
-//        phone = itemView.findViewById(R.id.phonenum);
+        location = itemView.findViewById(R.id.location);
         id = itemView.findViewById(R.id.id);
         icon=itemView.findViewById(R.id.iconView);
         favourite=itemView.findViewById(R.id.favicon);
@@ -39,6 +39,12 @@ public class PlacesRecyclerViewHolder extends RecyclerView.ViewHolder {
                mainPresenter.requestDetailsAPIcall(id.getText().toString());
                EventBus.getDefault().post(true);
 
+            }
+        });
+        favourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favourite.setImageResource(R.mipmap.icons8_heart_40);
             }
         });
     }

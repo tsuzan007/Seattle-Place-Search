@@ -9,7 +9,6 @@ import android.provider.Settings;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
@@ -25,6 +23,7 @@ import android.widget.TextView;
 
 
 import com.mark46.code.seattleplaces.Model.DaggerComponents.MyApplicationDaggerBuild;
+import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
 import com.mark46.code.seattleplaces.Model.RetrofitComponents.FourSquareApiEvent;
 import com.mark46.code.seattleplaces.Model.RetrofitComponents.FourSquareApiFailureEvent;
 import com.mark46.code.seattleplaces.Presenter.MainPresenter;
@@ -40,12 +39,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import javax.inject.Inject;
 
 
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.annotations.NonNull;
-
 import static android.support.v7.widget.SearchView.*;
 
 
@@ -60,6 +53,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private boolean network_connection = false;
     private TextView message;
     private ProgressBar progressBar;
+    static ResponseData responseData;
+
+
+
 
 
     @Inject
@@ -204,13 +201,14 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEvent(FourSquareApiEvent fourSquareApiEvent) {
-        presenterViewModel.setVenueData(fourSquareApiEvent.getListOfResponse());
+        responseData=fourSquareApiEvent.getListOfResponse();
+        presenterViewModel.setVenueData(responseData.getResponse().getVenues());
         message.setVisibility(GONE);
         progressBar.setVisibility(GONE);
         recyclerView.setVisibility(View.VISIBLE);
-        Log.e("###", "size " + fourSquareApiEvent.getListOfResponse().size());
+        Log.e("###....", "size " + responseData.getResponse().getVenues().size());
         //Passing the Network Response List to RecyclerViewAdapter
-        placesRecyclerViewAdapter = new PlacesRecyclerViewAdapter(fourSquareApiEvent.getListOfResponse(), mainPresenter);
+        placesRecyclerViewAdapter = new PlacesRecyclerViewAdapter(responseData.getResponse().getVenues(), mainPresenter);
         //Setting the Layout to RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Setting the Adapter to RecyclerView
@@ -302,6 +300,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         if(v.getId()==R.id.floatingActionButton_Map){
             Intent intent=new Intent(SearchActivity.this,MapActivity.class);
             startActivity(intent);
+
+
         }else if(v.getId()==R.id.cardView_Search){
             mSearchView.setIconified(false);
         }

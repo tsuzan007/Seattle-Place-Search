@@ -12,15 +12,15 @@ import java.util.List;
 
 public class FourSquareApiEvent {
 
-    private List<ResponseData.ResponseBean.VenuesBean> response;
+    private ResponseData response;
 
     //    Receives the List<Response> values from the FourSquareApiDataParser Event
-    public FourSquareApiEvent(List<ResponseData.ResponseBean.VenuesBean> response) {
+    public FourSquareApiEvent(ResponseData response) {
         this.response = response;
     }
 
     //    Method to return the List<Response> value received from FourSquareApiDataParser
-    public List<ResponseData.ResponseBean.VenuesBean> getListOfResponse() {
+    public ResponseData getListOfResponse() {
         return response;
     }
 }

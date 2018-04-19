@@ -1,8 +1,12 @@
 package com.mark46.code.seattleplaces;
 
 
-import android.support.v7.app.AppCompatActivity;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -13,39 +17,64 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.ClusterRenderer;
 import com.mark46.code.seattleplaces.Model.POJOs.MapItem;
+import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
+import com.mark46.code.seattleplaces.Presenter.MainPresenter;
+import com.mark46.code.seattleplaces.Utils.PresenterViewModel;
+
+import java.util.List;
+import java.util.Set;
 
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback,ClusterManager.OnClusterItemInfoWindowClickListener {
 
     private GoogleMap mMap;
     private ProgressBar progressBar;
     private TextView message;
+    private MapItem clickedClusterItem;
 
     // Declare a variable for the cluster manager.
     private ClusterManager<MapItem> mClusterManager;
-
+    private List<ResponseData.ResponseBean.VenuesBean> venueList;
+    private PresenterViewModel presenterViewModel;
+    private MainPresenter mainPresenter;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.textView_mapLoading);
+        setContentView(R.layout.fragment_map);
         progressBar=findViewById(R.id.progressBar_mapLoading);
         message=findViewById(R.id.textView_mapLoading);
-        mapFragment.getMapAsync(this);
+        presenterViewModel = ViewModelProviders.of(this).get(PresenterViewModel.class);
+        mainPresenter = presenterViewModel.getMainPresenter();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        try {
+            mapFragment.getMapAsync(this);
+        }catch (Exception e){
+            Log.e("....",e.toString());
+        }
+        venueList=SearchActivity.responseData.getResponse().getVenues();
+    }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
 
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
+
     }
 
     @Override
@@ -56,54 +85,99 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
-
-
-        // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         setUpClusterer();
 
     }
 
     private void setUpClusterer() {
         // Position the map.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), 10));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(venueList.get(0).getLocation().getLat(), venueList.get(0).getLocation().getLng()), 10));
 
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
         mClusterManager = new ClusterManager<MapItem>(this, mMap);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
+
+        mMap.setOnInfoWindowClickListener(mClusterManager);
+        mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
+
+        mMap.setOnInfoWindowClickListener(mClusterManager); //added
+        mClusterManager.setOnClusterItemInfoWindowClickListener(this);
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MapItem>() {
             @Override
             public boolean onClusterItemClick(MapItem mapItem) {
-                Toast.makeText(MapActivity.this,mapItem.getTitle(),Toast.LENGTH_LONG).show();
-                return true;
+                clickedClusterItem = mapItem;
+                return false;
             }
         });
+
 
         // Point the map's listeners at the listeners implemented by the cluster
         // manager.
         mMap.setOnCameraIdleListener(mClusterManager);
         mMap.setOnMarkerClickListener(mClusterManager);
+        loadItems();
+        mClusterManager.getMarkerCollection().setOnInfoWindowAdapter(
+                new MyCustomAdapterForItems());
 
-
-        // Add cluster items (markers) to the cluster manager.
-        addItems();
     }
 
-    private void addItems() {
-
-        // Set some lat/lng coordinates to start with.
-        double lat = 51.5145160;
-        double lng = -0.1270060;
-
-        // Add ten cluster items in close proximity, for purposes of this example.
-        for (int i = 0; i < 10; i++) {
-            double offset = i / 60d;
-            lat = lat + offset;
-            lng = lng + offset;
-            MapItem offsetItem = new MapItem(lat, lng);
+    protected void addItems(String title, double lat, double lng,String id) {
+            MapItem offsetItem = new MapItem(lat, lng,title,id);
             mClusterManager.addItem(offsetItem);
+    }
+
+
+    private  void loadItems(){
+       Runnable runnable=new Runnable() {
+           @Override
+           public void run() {
+               for(ResponseData.ResponseBean.VenuesBean v:venueList){
+                   addItems(v.getName(),v.getLocation().getLat(),v.getLocation().getLng(),v.getId());
+               }
+
+
+           }
+       };
+       new Thread(runnable).start();
+    }
+
+
+
+    @Override
+    public void onClusterItemInfoWindowClick(ClusterItem clusterItem) {
+
+        mainPresenter.requestDetailsAPIcall(clusterItem.getSnippet());
+        Intent intent=new Intent(this,DetailActivity.class);
+        startActivity(intent);
+
+    }
+
+    public class MyCustomAdapterForItems implements GoogleMap.InfoWindowAdapter {
+
+        private final View myContentsView;
+
+        MyCustomAdapterForItems() {
+            myContentsView = getLayoutInflater().inflate(
+                    R.layout.info_window, null);
+        }
+        @Override
+        public View getInfoWindow(Marker marker) {
+
+            TextView tvTitle = ((TextView) myContentsView
+                    .findViewById(R.id.txtTitle));
+
+            tvTitle.setText(clickedClusterItem.getTitle());
+
+            return myContentsView;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            return null;
         }
     }
+
+
 }
