@@ -123,6 +123,24 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
     }
 
+
+    /**
+     * Invoked when place details are received with out error.
+     * @param detailApiEvent Custom Event
+     */
+    @Subscribe
+    public void onPlaceDetailReceived(DetailApiEvent detailApiEvent) {
+        responseDetail=detailApiEvent.getDetailResponse();
+        presenterViewModel.setResponseDetail(responseDetail);
+        populateViews();
+
+
+
+    }
+
+    /**
+     * Fill view with their respective information.
+     */
     private void populateViews(){
         ResponseDetail.ResponseBean.VenueBean v = responseDetail.getResponse().getVenue();
         this.lat = v.getLocation().getLat();
@@ -194,31 +212,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
             e.printStackTrace();
         }
-
-    }
-
-    /**
-     * Invoked when place details are received with out error.
-     * @param detailApiEvent Custom Event
-     */
-    @Subscribe
-    public void onPlaceDetailReceived(DetailApiEvent detailApiEvent) {
-        responseDetail=detailApiEvent.getDetailResponse();
-        presenterViewModel.setResponseDetail(responseDetail);
-        populateViews();
-//        weblink.setText(v.getCanonicalUrl());
-//        weblink.setOnClickListener(this);
-//        rating.setText("Rating "+v.getRating());
-//        address.setText(v.getLocation().getFormattedAddress().get(0)+"\n"+
-//                v.getLocation().getFormattedAddress().get(1)
-//        );
-//        phonenum.setText(v.getContact().getFormattedPhone()+"\n"+
-//                v.getContact().getFacebookName()+"\n"+
-//                v.getContact().getTwitter());
-//        price.setText("Currency:"+v.getPrice().getCurrency()+" \t "+"Price: "+v.getPrice().getMessage());
-//        regularhours.setText(v.getHours().getTimeframes().get(0).getDays()+": "+v.getHours().getTimeframes().get(0).getOpen().get(0).getRenderedTime());
-//        weekendhours.setText(v.getHours().getTimeframes().get(1).getDays()+": "+v.getHours().getTimeframes().get(1).getOpen().get(0).getRenderedTime());
-
 
     }
 
