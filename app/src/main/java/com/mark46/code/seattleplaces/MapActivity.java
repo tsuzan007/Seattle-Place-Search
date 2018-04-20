@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,8 +16,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.mark46.code.seattleplaces.Model.POJOs.MapItem;
@@ -46,7 +48,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_map);
+        setContentView(R.layout.activity_map);
         // Initialize views
         progressBar = findViewById(R.id.progressBar_mapLoading);
         message = findViewById(R.id.textView_mapLoading);
@@ -91,7 +93,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
-        setUpClusterer();
+        LatLng center = new LatLng(47.60621, -122.33207);
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.map_pin);
+        mMap.addMarker(new MarkerOptions().position(center)
+                .title("Center").icon(icon));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 10));
+        if(venueList.size()>0) {
+            setUpClusterer();
+        }
 
     }
 

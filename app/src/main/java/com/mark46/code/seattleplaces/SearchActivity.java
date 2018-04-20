@@ -1,9 +1,11 @@
 package com.mark46.code.seattleplaces;
 
+import android.app.ActivityOptions;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.Settings;
@@ -211,16 +213,24 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private void showRecyclerView(){
         message.setVisibility(GONE);
         progressBar.setVisibility(GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+        if (responseData.getResponse().getVenues().size() > 0) {
+            recyclerView.setVisibility(View.VISIBLE);
+            floatingActionButton.setVisibility(VISIBLE);
+            Log.e("###....", "size " + responseData.getResponse().getVenues().size());
+            //Passing the Network Response List to RecyclerViewAdapter
+            placesRecyclerViewAdapter = new PlacesRecyclerViewAdapter(responseData.getResponse().getVenues(), mainPresenter);
+            //Setting the Layout to RecyclerView
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            // Setting the Adapter to RecyclerView
+            recyclerView.setAdapter(placesRecyclerViewAdapter);
 
-        Log.e("###....", "size " + responseData.getResponse().getVenues().size());
-        //Passing the Network Response List to RecyclerViewAdapter
-        placesRecyclerViewAdapter = new PlacesRecyclerViewAdapter(responseData.getResponse().getVenues(), mainPresenter);
-        //Setting the Layout to RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // Setting the Adapter to RecyclerView
-        recyclerView.setAdapter(placesRecyclerViewAdapter);
-        floatingActionButton.setVisibility(VISIBLE);
+        }else {
+            recyclerView.setVisibility(INVISIBLE);
+            floatingActionButton.setVisibility(GONE);
+            message.setText(R.string.NO_SEARCH_RESULT);
+            message.setVisibility(VISIBLE);
+        }
+
 
     }
 
@@ -270,6 +280,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         showSnackBarAlert("No data found.Re-enter your search result");
         progressBar.setVisibility(GONE);
         recyclerView.setVisibility(GONE);
+        floatingActionButton.setVisibility(GONE);
         message.setText(R.string.NO_SEARCH_RESULT);
         message.setVisibility(VISIBLE);
 

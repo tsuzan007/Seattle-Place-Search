@@ -130,12 +130,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
         try {
             details.setText(v.getPage().getPageInfo().getDescription());
         } catch (NullPointerException e) {
-
+            e.printStackTrace();
         }
         try {
             name.setText(v.getName());
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         try {
             weblink.setText(v.getCanonicalUrl());
@@ -143,49 +143,56 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
         } catch (NullPointerException e) {
 
-
+            e.printStackTrace();
         }
         try {
-            rating.setText("Rating " + v.getRating());
+            String number=v.getRating()!=null?v.getRating():"-";
+            rating.setText("Rating " + number);
 
         } catch (NullPointerException e) {
-
+            e.printStackTrace();
         }
         try {
-            address.setText(v.getLocation().getFormattedAddress().get(0) + "\n" +
-                    v.getLocation().getFormattedAddress().get(1)
-            );
+            String street=v.getLocation().getFormattedAddress().get(0)!=null? v.getLocation().getFormattedAddress().get(0):"";
+            String town=v.getLocation().getFormattedAddress().get(1)!=null?v.getLocation().getFormattedAddress().get(1):" ";
+            address.setText(street + "\n" + town);
 
         } catch (NullPointerException e) {
-
+            e.printStackTrace();
         }
         try {
             String phonenumber = v.getContact().getFormattedPhone() != null ? v.getContact().getFacebookName() : "";
             String facebookName = v.getContact().getFacebookName() != null ? v.getContact().getFacebookName() : "";
-            String twitterName = v.getContact().getTwitter() != null ? v.getContact().getTwitter() : " ";
+            String twitterName = v.getContact().getTwitter() != null ? v.getContact().getTwitter() : "";
             phonenum.setText(phonenumber + "\n" +
                     facebookName + "\n" +
                     twitterName);
 
         } catch (NullPointerException e) {
-
+            e.printStackTrace();
         }
         try {
-            price.setText("Currency:" + v.getPrice().getCurrency() + " \t " + "Price: " + v.getPrice().getMessage());
+            String currency= v.getPrice().getCurrency()!=null? v.getPrice().getCurrency():"";
+            String cost=v.getPrice().getMessage()!=null?v.getPrice().getMessage():"";
+            price.setText("Currency:" +currency + " \t " + "Price: " + cost);
 
         } catch (NullPointerException e) {
-
+            e.printStackTrace();
         }
         try {
-            regularhours.setText(v.getHours().getTimeframes().get(0).getDays() + ": " + v.getHours().getTimeframes().get(0).getOpen().get(0).getRenderedTime());
+            String days=v.getHours().getTimeframes().get(0).getDays()!=null?v.getHours().getTimeframes().get(0).getDays():"";
+            String hours=v.getHours().getTimeframes().get(0).getOpen().get(0).getRenderedTime()!=null?v.getHours().getTimeframes().get(0).getOpen().get(0).getRenderedTime():"";
+            regularhours.setText(days + ": " +hours);
         } catch (NullPointerException e) {
-
+            e.printStackTrace();
         }
         try {
-
+            String days=v.getHours().getTimeframes().get(1).getDays()!=null?v.getHours().getTimeframes().get(1).getDays():"";
+            String hours=v.getHours().getTimeframes().get(1).getOpen().get(0).getRenderedTime()!=null?v.getHours().getTimeframes().get(1).getOpen().get(0).getRenderedTime():"";
+            weekendhours.setText(days + ": " + hours);
         } catch (Exception e) {
-            weekendhours.setText(v.getHours().getTimeframes().get(1).getDays() + ": " + v.getHours().getTimeframes().get(1).getOpen().get(0).getRenderedTime());
 
+            e.printStackTrace();
         }
 
     }

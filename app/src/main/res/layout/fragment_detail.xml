@@ -8,7 +8,7 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="233dp"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/cardview_default_elevation"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
@@ -33,6 +33,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
+                android:ems="10"
                 android:maxLines="3"
                 android:minLines="1"
                 android:text="No details"
@@ -48,6 +49,8 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:ems="10"
+                android:maxLines="4"
                 android:padding="@dimen/cardview_default_radius"
                 android:text="Name"
                 android:textSize="18sp"
@@ -77,13 +80,16 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:clickable="true"
+                android:maxLines="3"
                 android:text="Web link not available"
                 android:textColor="@android:color/holo_blue_dark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/weekendhrs" />
 
             <TextView
                 android:id="@+id/rating"
@@ -122,9 +128,10 @@
                 android:id="@+id/reghours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
                 android:layout_marginTop="8dp"
+                android:maxLines="4"
                 android:text="No Hours information"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -133,9 +140,9 @@
                 android:id="@+id/weekendhrs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="4dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/reghours" />
 
@@ -147,7 +154,7 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="118dp"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/cardview_default_radius"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
