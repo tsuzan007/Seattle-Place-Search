@@ -16,6 +16,12 @@ public class PresenterViewModel extends ViewModel {
 
     ResponseData responseData;
     ResponseDetail responseDetail;
+    private MainPresenter mainPresenter;
+
+
+    public void setMainPresenter(MainPresenter mainPresenter) {
+        this.mainPresenter = mainPresenter;
+    }
 
     public ResponseDetail getResponseDetail() {
         if (responseDetail != null) {
@@ -30,7 +36,7 @@ public class PresenterViewModel extends ViewModel {
         this.responseDetail = responseDetail;
     }
 
-    private MainPresenter mainPresenter;
+
 
     public MainPresenter getMainPresenter() {
         if (mainPresenter != null) {
