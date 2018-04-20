@@ -44,6 +44,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private List<ResponseData.ResponseBean.VenuesBean> venueList;
     private PresenterViewModel presenterViewModel;
     private MainPresenter mainPresenter;
+    public static String ACTION_INTENT_FROM_MAPACTIVITY="ACTION_INTENT_FROM_MAPACTIVITY";
 
 
     @Override
@@ -148,9 +149,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onClusterItemInfoWindowClick(ClusterItem clusterItem) {
-
         mainPresenter.requestDetailsAPIcall(clusterItem.getSnippet());
         Intent intent=new Intent(this,DetailActivity.class);
+        intent.setAction(ACTION_INTENT_FROM_MAPACTIVITY);
         startActivity(intent);
 
     }

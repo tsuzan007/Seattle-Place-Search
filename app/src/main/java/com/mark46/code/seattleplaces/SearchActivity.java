@@ -6,10 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -20,10 +18,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.mark46.code.seattleplaces.Model.DaggerComponents.MyApplicationDaggerBuild;
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
+import com.mark46.code.seattleplaces.Model.RetrofitComponents.CustomEvent;
 import com.mark46.code.seattleplaces.Model.RetrofitComponents.FourSquareApiEvent;
 import com.mark46.code.seattleplaces.Model.RetrofitComponents.FourSquareApiFailureEvent;
 import com.mark46.code.seattleplaces.Presenter.MainPresenter;
@@ -53,7 +53,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private boolean network_connection = false;
     private TextView message;
     private ProgressBar progressBar;
-    static ResponseData responseData;
+    public static ResponseData responseData;
+    public static String ACTION_INTENT_FROM_SEARCHACTIVITY=" ACTION_INTENT_FROM_SEARCHACTIVITY";
+
 
 
 
@@ -93,11 +95,13 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         super.onStart();
         network_connection = checkNetwork.getNetworkConnectionStatus();
         EventBus.getDefault().register(this);
+
     }
 
 
     @Override
     protected void onResume() {
+        super.onResume();
         if(!network_connection){
             showSnackBarAlert("No Internet Connection. Please check your connection.");
         }
@@ -122,8 +126,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
+        if(placesRecyclerViewAdapter!=null){
+            placesRecyclerViewAdapter.notifyDataSetChanged();
+        }
 
-        super.onResume();
+
+
     }
 
 
@@ -219,9 +227,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRecyclerViewItemClicked(Boolean value){
-        if(value){
+    public void onRecyclerViewItemClicked(CustomEvent customEvent){
+        if(customEvent.isRecyclerItemClicked()){
             Intent intent=new Intent(this,DetailActivity.class);
+            intent.setAction(ACTION_INTENT_FROM_SEARCHACTIVITY);
+            intent.putExtra("isfab",customEvent.isFavourite());
+            intent.putExtra("position",customEvent.getPosition());
             startActivity(intent);
         }
 
@@ -299,11 +310,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         if(v.getId()==R.id.floatingActionButton_Map){
             Intent intent=new Intent(SearchActivity.this,MapActivity.class);
+            intent.setAction(ACTION_INTENT_FROM_SEARCHACTIVITY);
             startActivity(intent);
-
-
         }else if(v.getId()==R.id.cardView_Search){
             mSearchView.setIconified(false);
         }
     }
+
 }

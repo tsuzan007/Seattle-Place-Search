@@ -10,12 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseDetail;
 import com.mark46.code.seattleplaces.Model.RetrofitComponents.DetailApiEvent;
 import com.mark46.code.seattleplaces.R;
+import com.mark46.code.seattleplaces.SearchActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,9 +41,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     TextView price;
     TextView regularhours;
     TextView weekendhours;
+    ImageView imageView;
     private  double lat;
     private  double lng;
-    ArrayList<TextView> arrayList;
+    boolean isfavourite;
+    int position;
 
     public double getLat() {
         return lat;
@@ -51,7 +55,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     public double getLng() {
         return lng;
     }
-
 
 
     @Nullable
@@ -67,17 +70,36 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
         price=view.findViewById(R.id.price);
         regularhours=view.findViewById(R.id.reghours);
         weekendhours=view.findViewById(R.id.weekendhrs);
+        imageView=view.findViewById(R.id.imageView_detail);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isfavourite){
+                    imageView.setImageResource(R.mipmap.icons8_heart_32);
+                    SearchActivity.responseData.getResponse().getVenues().get(position).setFavourite(false);
+                }
+                else{
+                    imageView.setImageResource(R.mipmap.icons8_heart_40);
+                    SearchActivity.responseData.getResponse().getVenues().get(position).setFavourite(true);
+                }
 
-        arrayList=new ArrayList<>();
-        arrayList.add(details);
-        arrayList.add(name);
-        arrayList.add(weblink);
-        arrayList.add(address);
-        arrayList.add(phonenum);
-        arrayList.add(rating);
-        arrayList.add(price);
-        arrayList.add(regularhours);
-        arrayList.add(weekendhours);
+
+
+            }
+        });
+        if(getArguments()!=null ){
+           isfavourite=getArguments().getBoolean("isfavourite");
+           position=getArguments().getInt("position");
+            if(isfavourite){
+                imageView.setImageResource(R.mipmap.icons8_heart_40);
+
+            }
+            else{
+                imageView.setImageResource(R.mipmap.icons8_heart_32);
+
+            }
+        }
+
         return  view;
     }
 

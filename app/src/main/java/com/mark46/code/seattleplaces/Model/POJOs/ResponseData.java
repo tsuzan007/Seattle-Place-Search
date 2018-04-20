@@ -13,6 +13,7 @@ public class ResponseData {
     private MetaBean meta;
     private ResponseBean response;
 
+
     public MetaBean getMeta() {
         return meta;
     }
@@ -28,6 +29,7 @@ public class ResponseData {
     public void setResponse(ResponseBean response) {
         this.response = response;
     }
+
 
     public static class MetaBean {
         /**
@@ -380,6 +382,15 @@ public class ResponseData {
             private boolean hasPerk;
             private VenuePageBean venuePage;
             private List<CategoriesBean> categories;
+            private boolean favourite=false;
+
+            public boolean isFavourite() {
+                return favourite;
+            }
+
+            public void setFavourite(boolean favourite) {
+                this.favourite = favourite;
+            }
 
             public String getId() {
                 return id;

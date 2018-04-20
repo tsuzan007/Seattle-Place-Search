@@ -2,6 +2,7 @@ package com.mark46.code.seattleplaces;
 
 
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -33,11 +34,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        detailFragment=new DetailFragment();
-        fragmentManager=getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.frameLayout_detail,detailFragment);
-        fragmentTransaction.commit();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -52,6 +48,35 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     @Override
     protected void onResume() {
         super.onResume();
+        Intent intent=getIntent();
+        boolean value=false;
+        int position=0;
+        try {
+            if(intent.getAction()==MapActivity.ACTION_INTENT_FROM_MAPACTIVITY){
+                String isfab=intent.getStringExtra("isfab");
+                value=isfab=="true"? true:false;
+                position=intent.getIntExtra("position",0);
+            }
+            else if(intent.getAction()==SearchActivity.ACTION_INTENT_FROM_SEARCHACTIVITY){
+                value=intent.getBooleanExtra("isfab",false);
+                position=intent.getIntExtra("position",0);
+
+            }
+        }
+        catch (NullPointerException e){
+
+        }
+        Bundle bundle=new Bundle();
+        bundle.putBoolean("isfavourite",value);
+        bundle.putInt("position",position);
+        detailFragment=new DetailFragment();
+        detailFragment.setArguments(bundle);
+        fragmentManager=getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.frameLayout_detail,detailFragment);
+        fragmentTransaction.commit();
+
+
     }
 
     @Override

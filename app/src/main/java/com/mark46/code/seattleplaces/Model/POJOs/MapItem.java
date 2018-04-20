@@ -10,8 +10,8 @@ public class MapItem implements ClusterItem {
 
     public MapItem(double lat, double lng, String mTitle, String mSnippet) {
         this.mTitle = mTitle;
-        this.mSnippet = mSnippet;
         mPosition = new LatLng(lat, lng);
+        this.mSnippet=mSnippet;
     }
 
     public MapItem(double lat, double lng){

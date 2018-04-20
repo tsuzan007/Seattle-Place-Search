@@ -1,14 +1,15 @@
 package com.mark46.code.seattleplaces.View;
 
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mark46.code.seattleplaces.Model.RetrofitComponents.CustomEvent;
 import com.mark46.code.seattleplaces.Presenter.MainPresenter;
 import com.mark46.code.seattleplaces.R;
+import com.mark46.code.seattleplaces.SearchActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -22,31 +23,25 @@ public class PlacesRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     TextView name, category, distance, location, id;
     ImageView icon, favourite;
+    boolean isFab;
 
 
-    public PlacesRecyclerViewHolder(final View itemView, final MainPresenter mainPresenter) {
+    public PlacesRecyclerViewHolder(final View itemView) {
         super(itemView);
-        name= itemView.findViewById(R.id.name);
+        name = itemView.findViewById(R.id.name);
         category = itemView.findViewById(R.id.category);
         distance = itemView.findViewById(R.id.distance);
         location = itemView.findViewById(R.id.location);
         id = itemView.findViewById(R.id.id);
-        icon=itemView.findViewById(R.id.iconView);
-        favourite=itemView.findViewById(R.id.favicon);
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               mainPresenter.requestDetailsAPIcall(id.getText().toString());
-               EventBus.getDefault().post(true);
+        icon = itemView.findViewById(R.id.iconView);
+        favourite = itemView.findViewById(R.id.favicon);
+        if (isFab) {
+            favourite.setImageResource(R.mipmap.icons8_heart_40);
+        } else {
+            favourite.setImageResource(R.mipmap.icons8_heart_32);
+        }
 
-            }
-        });
-        favourite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                favourite.setImageResource(R.mipmap.icons8_heart_40);
-            }
-        });
     }
+
 
 }
