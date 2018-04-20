@@ -79,7 +79,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         floatingActionButton.setVisibility(View.GONE);
         message.setVisibility(VISIBLE);
         if(savedInstanceState!=null){
-            mSearchView.setQuery(savedInstanceState.getCharSequence("search_query"),true);
+            mSearchView.setQuery(savedInstanceState.getCharSequence("search_query"),false);
 
         }
         // Initialize ViewModel
@@ -106,6 +106,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
         outState.putString("search_query",mSearchView.getQuery().toString());
+
 
     }
 
@@ -211,6 +212,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         message.setVisibility(GONE);
         progressBar.setVisibility(GONE);
         recyclerView.setVisibility(View.VISIBLE);
+
         Log.e("###....", "size " + responseData.getResponse().getVenues().size());
         //Passing the Network Response List to RecyclerViewAdapter
         placesRecyclerViewAdapter = new PlacesRecyclerViewAdapter(responseData.getResponse().getVenues(), mainPresenter);

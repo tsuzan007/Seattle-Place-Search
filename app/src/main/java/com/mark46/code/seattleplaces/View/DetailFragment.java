@@ -45,6 +45,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     ResponseDetail responseDetail;
 
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Nullable
     @Override
@@ -88,22 +93,15 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
             }
         }
-        setRetainInstance(true);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenterViewModel = ViewModelProviders.of(this).get(PresenterViewModel.class);
+        presenterViewModel = ViewModelProviders.of(getActivity()).get(PresenterViewModel.class);
         responseDetail=presenterViewModel.getResponseDetail();
-        try{
-            if(responseDetail.getResponse().getVenue()!=null){
-                populateViews();
-            }
-        } catch (NullPointerException e){
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -115,7 +113,13 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        details.setText("Details");
+        try{
+            if(responseDetail.getResponse().getVenue()!=null){
+                populateViews();
+            }
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
     }
 
