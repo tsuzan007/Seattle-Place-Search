@@ -53,9 +53,9 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         int position=0;
         try {
             if(intent.getAction()==MapActivity.ACTION_INTENT_FROM_MAPACTIVITY){
-                String isfab=intent.getStringExtra("isfab");
-                value=isfab=="true"? true:false;
                 position=intent.getIntExtra("position",0);
+                value=SearchActivity.responseData.getResponse().getVenues().get(position).isFavourite();
+
             }
             else if(intent.getAction()==SearchActivity.ACTION_INTENT_FROM_SEARCHACTIVITY){
                 value=intent.getBooleanExtra("isfab",false);
@@ -99,7 +99,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 .title("Center").icon(icon));
         mGoogleMap.addMarker(new MarkerOptions().position(place)
                 .title("place"));
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place, 5));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place, 15));
 
 
     }

@@ -93,7 +93,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     private void setUpClusterer() {
         // Position the map.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(venueList.get(0).getLocation().getLat(), venueList.get(0).getLocation().getLng()), 10));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(venueList.get(0).getLocation().getLat(),
+                        venueList.get(0).getLocation().getLng()), 12));
 
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
@@ -135,8 +137,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
        Runnable runnable=new Runnable() {
            @Override
            public void run() {
+               int position=0;
                for(ResponseData.ResponseBean.VenuesBean v:venueList){
-                   addItems(v.getName(),v.getLocation().getLat(),v.getLocation().getLng(),v.getId());
+                   addItems(v.getName(),v.getLocation().getLat(),v.getLocation().getLng(),v.getId()+"_"+position);
+                    position=position+1;
                }
 
 
@@ -149,9 +153,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onClusterItemInfoWindowClick(ClusterItem clusterItem) {
-        mainPresenter.requestDetailsAPIcall(clusterItem.getSnippet());
+        String[] snippet=clusterItem.getSnippet().split("_");
+        String id=snippet[0];
+        String position=snippet[1];
+        Toast.makeText(this,position,Toast.LENGTH_SHORT).show();
+        mainPresenter.requestDetailsAPIcall(id);
         Intent intent=new Intent(this,DetailActivity.class);
         intent.setAction(ACTION_INTENT_FROM_MAPACTIVITY);
+        intent.putExtra("position",Integer.parseInt(position));
         startActivity(intent);
 
     }
