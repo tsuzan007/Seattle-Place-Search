@@ -4,6 +4,7 @@ package com.mark46.code.seattleplaces;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -40,22 +41,26 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private List<ResponseData.ResponseBean.VenuesBean> venueList;
     private PresenterViewModel presenterViewModel;
     private MainPresenter mainPresenter;
+    private Thread thread;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_map);
+        // Initialize views
         progressBar = findViewById(R.id.progressBar_mapLoading);
         message = findViewById(R.id.textView_mapLoading);
+        // Initialize ViewModel and build dagger
         presenterViewModel = ViewModelProviders.of(this).get(PresenterViewModel.class);
         mainPresenter = presenterViewModel.getMainPresenter();
         mainPresenter.buildDagger();
+        // Initialize map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         try {
             mapFragment.getMapAsync(this);
         } catch (Exception e) {
-            Log.e("....", e.toString());
+            e.printStackTrace();
         }
         venueList = SearchActivity.responseData.getResponse().getVenues();
     }
@@ -74,6 +79,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         progressBar.setVisibility(View.GONE);
         message.setVisibility(View.GONE);
@@ -85,6 +95,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
+
+    /**
+     *  Set up Clustered map
+     */
     private void setUpClusterer() {
         // Position the map.
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -96,12 +110,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mClusterManager = new ClusterManager<MapItem>(this, mMap);
         mMap.setOnMarkerClickListener(mClusterManager);
         mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
-
         mMap.setOnInfoWindowClickListener(mClusterManager);
         mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
-
         mMap.setOnInfoWindowClickListener(mClusterManager); //added
         mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+        // Action listener for when user clicks marker
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MapItem>() {
             @Override
             public boolean onClusterItemClick(MapItem mapItem) {
@@ -109,7 +122,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 return false;
             }
         });
-
 
         // Point the map's listeners at the listeners implemented by the cluster
         // manager.
@@ -121,14 +133,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Add all searched results in the map
+     * @param title title of the marker
+     * @param lat   lat position of marker
+     * @param lng   lng position of marker
+     * @param id    id of the place and it's position in the list
+     */
     protected void addItems(String title, double lat, double lng, String id) {
         MapItem offsetItem = new MapItem(lat, lng, title, id);
         mClusterManager.addItem(offsetItem);
     }
 
-
+    /**
+     * Load items from list to clustered Manager
+     */
     private void loadItems() {
-        Runnable runnable = new Runnable() {
+         Runnable runnable= new Runnable() {
             @Override
             public void run() {
                 int position = 0;
@@ -140,10 +161,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
             }
         };
-        new Thread(runnable).start();
+        Thread thread=new Thread(runnable);
+        thread.start();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+    }
+
+    /**
+     *  Invoked when user clicked the title in the map. User is taken to Detail Activity.
+     * @param clusterItem items or marker
+     */
     @Override
     public void onClusterItemInfoWindowClick(ClusterItem clusterItem) {
         String[] snippet = clusterItem.getSnippet().split("_");
@@ -158,6 +189,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Class that handles title and mSnippet in each item/marker in GoogleMaps.
+     */
     public class MyCustomAdapterForItems implements GoogleMap.InfoWindowAdapter {
 
         private final View myContentsView;
@@ -169,12 +203,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         @Override
         public View getInfoWindow(Marker marker) {
-
             TextView tvTitle = ((TextView) myContentsView
                     .findViewById(R.id.txtTitle));
-
             tvTitle.setText(clickedClusterItem.getTitle());
-
             return myContentsView;
         }
 

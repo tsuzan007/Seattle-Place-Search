@@ -29,10 +29,18 @@ public class MainPresenter {
     }
 
 
+    /**
+     *  Request venue based on the query
+     * @param query search text given by the user
+     */
     public void startSearch(String query) {
         fourSquareApiDataParser.getJSONDataFromAPI(query);
     }
 
+    /**
+     * Request detail information of selected place
+     * @param id id of the place/venue
+     */
     public void requestDetailsAPIcall(String id) {
         fourSquareApiDataParser.getPlaceDetailsFromAPI(id);
 

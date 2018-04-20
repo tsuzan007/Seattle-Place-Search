@@ -15,9 +15,11 @@ import retrofit2.http.Query;
  */
 
 public interface FourSquareApiInterface {
+    //GET SEARCHES
     @GET("search/?")
     Call<ResponseData> getPlaces(@Query("client_id") String clientID, @Query("client_secret") String clientSecret, @Query("near") String address, @Query("query") String search, @Query("v") String date);
 
+    //GET DETAILS
     @GET("{VENUE_ID}/?")
     Call<ResponseDetail> getPlaceDetails(@Path("VENUE_ID") String venueID, @Query("client_id") String clientID, @Query("client_secret") String clientSecret, @Query("v") String date);
 

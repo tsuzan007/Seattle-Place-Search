@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Seattle Places</string>
-    <string name="app_label">NYCSchools</string>
-    <string name="search_hint">Search for School</string>
+    <string name="app_label">Seattle Places</string>
+    <string name="search_hint">Search...</string>
     <string name="internetstatus">No Internet Connection</string>
     <string name="permissionMessage">Enable the required Permission for the Application \n Go to Setting and Enable the Permissions</string>
     <string name="permissionTile">PERMISSIONS NEEDED</string>
@@ -14,4 +14,6 @@
     <string name="title_noconnection">No Connection</string>
     <string name="message_noconnection">Internet connection is not available.</string>
     <string name="GOOGLEMAP_API_KEY">AIzaSyAGuKHvCWSW3lvC2Bswm0h4xVzHz3RLZbE</string>
+    <string name="NO_SEARCH_RESULT">No Search Result.</string>
+
 </resources>

@@ -12,6 +12,9 @@ public class MyApplicationDaggerBuild extends Application {
         return myApplicationDaggerBuild;
     }
 
+    /**
+     *  Build Dagger
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -22,6 +25,10 @@ public class MyApplicationDaggerBuild extends Application {
     }
 
 
+    /**
+     *  Get Dagger instance
+     * @return DaggerComponent instance
+     */
     public MyApplicationDaggerComponent getMyApplicationDaggerComponent() {
         return myApplicationDaggerComponent;
     }

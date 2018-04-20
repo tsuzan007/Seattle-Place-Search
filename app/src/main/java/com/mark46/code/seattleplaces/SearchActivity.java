@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -63,20 +64,31 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        // Initialize views
         cardView = findViewById(R.id.cardView_Search);
         floatingActionButton = findViewById(R.id.floatingActionButton_Map);
-        floatingActionButton.setVisibility(View.GONE);
         mSearchView = findViewById(R.id.searchView);
-        mSearchView.setIconified(true);
         message = findViewById(R.id.Searchmessage);
-        presenterViewModel = ViewModelProviders.of(this).get(PresenterViewModel.class);
-        mainPresenter = presenterViewModel.getMainPresenter();
-        floatingActionButton.setOnClickListener(this);
-        mainPresenter.buildDagger();
-        cardView.setOnClickListener(this);
         recyclerView = findViewById(R.id.listRecyclerView);
         progressBar = findViewById(R.id.searchProgress);
+        // Set properties in views
+        mSearchView.setIconified(true);
+        cardView.setOnClickListener(this);
+        floatingActionButton.setOnClickListener(this);
         progressBar.setVisibility(INVISIBLE);
+        floatingActionButton.setVisibility(View.GONE);
+        message.setVisibility(VISIBLE);
+        if(savedInstanceState!=null){
+            mSearchView.setQuery(savedInstanceState.getCharSequence("search_query"),true);
+
+        }
+        // Initialize ViewModel
+        presenterViewModel = ViewModelProviders.of(this).get(PresenterViewModel.class);
+        mainPresenter = presenterViewModel.getMainPresenter();
+        responseData=presenterViewModel.getResponseData();
+        // Build Dagger
+        mainPresenter.buildDagger();
+        // Inject CheckNetwork
         MyApplicationDaggerBuild.getMyApplicationDaggerBuild().getMyApplicationDaggerComponent().inject(this);
 
 
@@ -90,38 +102,47 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putString("search_query",mSearchView.getQuery().toString());
+
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (!network_connection) {
             showSnackBarAlert("No Internet Connection. Please check your connection.");
-        }
-
-        mSearchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                message.setText("Searching Places...");
-                progressBar.setVisibility(VISIBLE);
-                mainPresenter.startSearch(query);
-                InputMethodManager imm = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(
-                        mSearchView.getWindowToken(), 0);
-
-                return true;
+            message.setVisibility(VISIBLE);
+        }else {
+            mSearchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    message.setText("Searching Places...");
+                    progressBar.setVisibility(VISIBLE);
+                    mainPresenter.startSearch(query);
+                    InputMethodManager imm = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            mSearchView.getWindowToken(), 0);
+                    return true;
+                }
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
+            if (placesRecyclerViewAdapter != null) {
+                placesRecyclerViewAdapter.notifyDataSetChanged();
             }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
-        if (placesRecyclerViewAdapter != null) {
-            placesRecyclerViewAdapter.notifyDataSetChanged();
         }
-
+        try{
+            if(responseData.getResponse().getVenues().size()>0){
+            showRecyclerView();}
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -132,7 +153,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         Log.e("...", "EventBus stopped");
         EventBus.getDefault().unregister(this);
     }
-
 
     /**
      * Shows alert dialog if there is no internet connection.
@@ -187,17 +207,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-
-    /**
-     * This method is invoked when request is successfull.
-     * Event is fired from NYCOpenDataParse.getSchoolDetailsFromAPI(final String dbn).
-     *
-     * @param fourSquareApiEvent Custom event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSuccessEvent(FourSquareApiEvent fourSquareApiEvent) {
-        responseData = fourSquareApiEvent.getListOfResponse();
-        presenterViewModel.setVenueData(responseData.getResponse().getVenues());
+    private void showRecyclerView(){
         message.setVisibility(GONE);
         progressBar.setVisibility(GONE);
         recyclerView.setVisibility(View.VISIBLE);
@@ -210,9 +220,30 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         recyclerView.setAdapter(placesRecyclerViewAdapter);
         floatingActionButton.setVisibility(VISIBLE);
 
+    }
+
+
+    /**
+     * This method is invoked when request is successfull.
+     * Event is fired from FourSquareApi class, getJSONDataFromAPI(String searchquery).
+     *
+     * @param fourSquareApiEvent Custom event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSuccessEvent(FourSquareApiEvent fourSquareApiEvent) {
+        responseData = fourSquareApiEvent.getListOfResponse();
+        presenterViewModel.setResponseData(responseData);
+        showRecyclerView();
+
+
 
     }
 
+    /**
+     * This method is invoked when user clicks in RecyclerView item.
+     * Event is fired from PlacesRecyclerViewAdapter, {holder.itemView.setOnClickListener}
+     * @param customEvent CustomEvent
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecyclerViewItemClicked(CustomEvent customEvent) {
         if (customEvent.isRecyclerItemClicked()) {
@@ -234,8 +265,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFailureEvent(FourSquareApiFailureEvent FourSquareApiFailureEvent) {
         // Passing the Network Response to UI
-        showSnackBarAlert("Internet connection is required to proceed.");
-        // mMainFragment.onFailureOpenNotifyApiResponse(FourSquareApiFailureEvent.getOnFailureResponse());
+        showSnackBarAlert("No data found.Re-enter your search result");
+        progressBar.setVisibility(GONE);
+        recyclerView.setVisibility(GONE);
+        message.setText(R.string.NO_SEARCH_RESULT);
+        message.setVisibility(VISIBLE);
+
 
     }
 
@@ -289,6 +324,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     // }
 
 
+    /**
+     *  Invoked when user clicks floating action button.
+     * @param v  Floating action button
+     */
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.floatingActionButton_Map) {

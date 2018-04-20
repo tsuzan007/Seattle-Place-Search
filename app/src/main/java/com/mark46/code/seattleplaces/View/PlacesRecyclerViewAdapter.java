@@ -37,6 +37,7 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
     public PlacesRecyclerViewAdapter(List<ResponseData.ResponseBean.VenuesBean> responseList, MainPresenter mainPresenter) {
         this.responseList = responseList;
         this.mainPresenter = mainPresenter;
+        // Default coordinate of Seattle Center
         loc1 = new Location("");
         loc1.setLatitude(47.608013);
         loc1.setLongitude(-122.335167);
@@ -48,7 +49,7 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
     public PlacesRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.datalayout, parent, false);
         final PlacesRecyclerViewHolder holder = new PlacesRecyclerViewHolder(view);
-
+        // Action listener for when user clicks the itemView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +59,7 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
                 EventBus.getDefault().post(new CustomEvent(true, SearchActivity.responseData.getResponse().getVenues().get(position).isFavourite(), position));
             }
         });
+        // Action listener for when user click the favourite icon
         holder.favourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

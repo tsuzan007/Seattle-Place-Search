@@ -29,9 +29,11 @@ public class FourSquareApiDataParser {
     @Inject
     @Named("Real")
     Retrofit retrofitAdapter;
+
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     Date date = new Date();
     String v = sdf.format(date);
+
     private FourSquareApiInterface FourSquareApiInterface;
     private String clientid = "PNGRBEBSB0FW5I1F54BGSKXFRKPOARABODX4XLERTUYSYUW0";
     private String clientsecret = "ACFA1DZH01XFFUNMN0VTQGXWVY22SSNXCWSC30DCFR3AWCRN";

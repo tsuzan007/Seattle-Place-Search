@@ -56,7 +56,7 @@ public class MyApplicationDaggerModule {
         return new FourSquareApiDataParser();
     }
 
-    //    Method to get the instance of the CheckNetwork class
+    // Method to get the instance of the CheckNetwork class
     @Singleton
     @Provides
     public CheckNetwork providesInternetCheck(Context context) {

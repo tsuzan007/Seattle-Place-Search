@@ -16,9 +16,9 @@ import com.mark46.code.seattleplaces.R;
 
 public class PlacesRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-    TextView name, category, distance, location, id;
-    ImageView icon, favourite;
-    boolean isFab;
+    public  TextView name, category, distance, location, id;
+    public ImageView icon, favourite;
+
 
 
     public PlacesRecyclerViewHolder(final View itemView) {
@@ -30,11 +30,7 @@ public class PlacesRecyclerViewHolder extends RecyclerView.ViewHolder {
         id = itemView.findViewById(R.id.id);
         icon = itemView.findViewById(R.id.iconView);
         favourite = itemView.findViewById(R.id.favicon);
-        if (isFab) {
-            favourite.setImageResource(R.mipmap.icons8_heart_40);
-        } else {
-            favourite.setImageResource(R.mipmap.icons8_heart_32);
-        }
+
 
     }
 

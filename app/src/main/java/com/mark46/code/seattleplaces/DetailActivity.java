@@ -3,6 +3,7 @@ package com.mark46.code.seattleplaces;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -47,18 +48,21 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         boolean value = false;
         int position = 0;
         try {
+            // Intent received from MapActivity
             if (intent.getAction() == MapActivity.ACTION_INTENT_FROM_MAPACTIVITY) {
                 position = intent.getIntExtra("position", 0);
                 value = SearchActivity.responseData.getResponse().getVenues().get(position).isFavourite();
-
+            // Intent received from SearchActivity
             } else if (intent.getAction() == SearchActivity.ACTION_INTENT_FROM_SEARCHACTIVITY) {
                 value = intent.getBooleanExtra("isfab", false);
                 position = intent.getIntExtra("position", 0);
 
             }
         } catch (NullPointerException e) {
+            e.printStackTrace();
 
         }
+        // Pass data to Fragment
         Bundle bundle = new Bundle();
         bundle.putBoolean("isfavourite", value);
         bundle.putInt("position", position);
@@ -69,7 +73,11 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         fragmentTransaction.add(R.id.frameLayout_detail, detailFragment);
         fragmentTransaction.commit();
 
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     @Override
@@ -79,6 +87,10 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
 
+    /**
+     *  Set up google Map, show controls and Seattle Center.
+     * @param googleMap GoogleMap instance.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;

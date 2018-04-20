@@ -65,6 +65,10 @@ public class FourSquareApi {
         };
     }
 
+    /**
+     * Retrofit builder
+     * @return Retrofit instance with given OKHTTPClient.
+     */
     public Retrofit getRetrofitAdapter() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
