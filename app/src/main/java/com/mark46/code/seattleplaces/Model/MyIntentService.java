@@ -14,12 +14,13 @@ public class MyIntentService extends IntentService {
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     *
-     *
-     *              private List<ResponseData.ResponseBean.VenuesBean> venueList;
+     * <p>
+     * <p>
+     * <p>
+     * private List<ResponseData.ResponseBean.VenuesBean> venueList;
      */
     private List<ResponseData.ResponseBean.VenuesBean> venueList;
+
     public MyIntentService() {
         super("my Intentservice");
     }
@@ -33,7 +34,7 @@ public class MyIntentService extends IntentService {
 //
 //        }
 
-        Log.e("......","in intent ");
+        Log.e("......", "in intent ");
 
     }
 }

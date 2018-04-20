@@ -1,9 +1,6 @@
 package com.mark46.code.seattleplaces.Model.RetrofitComponents;
 
-import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseDetail;
-
-import java.util.List;
 
 public class DetailApiEvent {
 

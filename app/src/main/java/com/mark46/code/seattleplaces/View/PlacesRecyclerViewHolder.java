@@ -6,12 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mark46.code.seattleplaces.Model.RetrofitComponents.CustomEvent;
-import com.mark46.code.seattleplaces.Presenter.MainPresenter;
 import com.mark46.code.seattleplaces.R;
-import com.mark46.code.seattleplaces.SearchActivity;
-
-import org.greenrobot.eventbus.EventBus;
 
 
 /**

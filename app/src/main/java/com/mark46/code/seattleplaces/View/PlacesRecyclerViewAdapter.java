@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
 import com.mark46.code.seattleplaces.Model.RetrofitComponents.CustomEvent;
@@ -29,10 +28,9 @@ import java.util.List;
 public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecyclerViewHolder> {
 
     MainPresenter mainPresenter;
-    private List<ResponseData.ResponseBean.VenuesBean> responseList;
     Location loc1;
+    private List<ResponseData.ResponseBean.VenuesBean> responseList;
     private boolean isFab;
-
 
 
     // Getting the Data from the Network Response.
@@ -54,24 +52,24 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("...",holder.getAdapterPosition()+"");
-               int position=holder.getAdapterPosition();
+                Log.e("...", holder.getAdapterPosition() + "");
+                int position = holder.getAdapterPosition();
                 mainPresenter.requestDetailsAPIcall(SearchActivity.responseData.getResponse().getVenues().get(position).getId());
-                EventBus.getDefault().post(new CustomEvent(true, SearchActivity.responseData.getResponse().getVenues().get(position).isFavourite(),position));
+                EventBus.getDefault().post(new CustomEvent(true, SearchActivity.responseData.getResponse().getVenues().get(position).isFavourite(), position));
             }
         });
         holder.favourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position=holder.getAdapterPosition();
-                Log.e("##...",position+"");
+                int position = holder.getAdapterPosition();
+                Log.e("##...", position + "");
                 isFab = SearchActivity.responseData.getResponse().getVenues().get(position).isFavourite();
                 if (isFab) {
-                    ((ImageView)v).setImageResource(R.mipmap.icons8_heart_32);
+                    ((ImageView) v).setImageResource(R.mipmap.icons8_heart_32);
                     SearchActivity.responseData.getResponse().getVenues().get(position).setFavourite(false);
 
                 } else {
-                    ((ImageView)v).setImageResource(R.mipmap.icons8_heart_40);
+                    ((ImageView) v).setImageResource(R.mipmap.icons8_heart_40);
                     SearchActivity.responseData.getResponse().getVenues().get(position).setFavourite(true);
 
                 }
@@ -90,13 +88,13 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
         loc2.setLatitude(responseList.get(position).getLocation().getLat());
         loc2.setLongitude(responseList.get(position).getLocation().getLng());
         float distanceInMeters = loc1.distanceTo(loc2);
-        holder.distance.setText("Distance from Seattle Center: "+distanceInMeters+" meters");
+        holder.distance.setText("Distance from Seattle Center: " + distanceInMeters + " meters");
         holder.location.setText(responseList.get(position).getLocation().getFormattedAddress().toString());
         holder.id.setText(responseList.get(position).getId());
-        if(SearchActivity.responseData.getResponse().getVenues().get(position).isFavourite()){
+        if (SearchActivity.responseData.getResponse().getVenues().get(position).isFavourite()) {
             Picasso.get().load(R.mipmap.icons8_heart_40).into(holder.favourite);
 
-        }else {
+        } else {
             Picasso.get().load(R.mipmap.icons8_heart_32).into(holder.favourite);
 
         }
@@ -105,7 +103,6 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
                 .placeholder(android.R.drawable.ic_lock_idle_lock)
                 .error(android.R.drawable.stat_notify_error)
                 .into(holder.icon);
-
 
 
     }
@@ -117,7 +114,6 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
         return responseList.size();
 
     }
-
 
 
 }

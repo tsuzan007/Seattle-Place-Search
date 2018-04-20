@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +21,6 @@ import com.mark46.code.seattleplaces.SearchActivity;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.internal.util.ArrayListSupplier;
-
 public class DetailFragment extends Fragment implements View.OnClickListener {
 
     TextView details;
@@ -42,10 +33,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     TextView regularhours;
     TextView weekendhours;
     ImageView imageView;
-    private  double lat;
-    private  double lng;
     boolean isfavourite;
     int position;
+    private double lat;
+    private double lng;
 
     public double getLat() {
         return lat;
@@ -60,47 +51,44 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_detail,container,false);
-        details=view.findViewById(R.id.detail);
-        name=view.findViewById(R.id.textView_detailname);
-        weblink=view.findViewById(R.id.weblink);
-        address=view.findViewById(R.id.address);
-        phonenum=view.findViewById(R.id.phonenum);
-        rating=view.findViewById(R.id.rating);
-        price=view.findViewById(R.id.price);
-        regularhours=view.findViewById(R.id.reghours);
-        weekendhours=view.findViewById(R.id.weekendhrs);
-        imageView=view.findViewById(R.id.imageView_detail);
+        View view = inflater.inflate(R.layout.fragment_detail, container, false);
+        details = view.findViewById(R.id.detail);
+        name = view.findViewById(R.id.textView_detailname);
+        weblink = view.findViewById(R.id.weblink);
+        address = view.findViewById(R.id.address);
+        phonenum = view.findViewById(R.id.phonenum);
+        rating = view.findViewById(R.id.rating);
+        price = view.findViewById(R.id.price);
+        regularhours = view.findViewById(R.id.reghours);
+        weekendhours = view.findViewById(R.id.weekendhrs);
+        imageView = view.findViewById(R.id.imageView_detail);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isfavourite){
+                if (isfavourite) {
                     imageView.setImageResource(R.mipmap.icons8_heart_32);
                     SearchActivity.responseData.getResponse().getVenues().get(position).setFavourite(false);
-                }
-                else{
+                } else {
                     imageView.setImageResource(R.mipmap.icons8_heart_40);
                     SearchActivity.responseData.getResponse().getVenues().get(position).setFavourite(true);
                 }
 
 
-
             }
         });
-        if(getArguments()!=null ){
-           isfavourite=getArguments().getBoolean("isfavourite");
-           position=getArguments().getInt("position");
-            if(isfavourite){
+        if (getArguments() != null) {
+            isfavourite = getArguments().getBoolean("isfavourite");
+            position = getArguments().getInt("position");
+            if (isfavourite) {
                 imageView.setImageResource(R.mipmap.icons8_heart_40);
 
-            }
-            else{
+            } else {
                 imageView.setImageResource(R.mipmap.icons8_heart_32);
 
             }
         }
 
-        return  view;
+        return view;
     }
 
     @Override
@@ -117,67 +105,67 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
     @Subscribe
     public void onPlaceDetailReceived(DetailApiEvent detailApiEvent) {
-        final ResponseDetail.ResponseBean.VenueBean v=detailApiEvent.getDetailResponse().getResponse().getVenue();
-        this.lat=v.getLocation().getLat();
-        this.lng=v.getLocation().getLng();
-        try{
+        final ResponseDetail.ResponseBean.VenueBean v = detailApiEvent.getDetailResponse().getResponse().getVenue();
+        this.lat = v.getLocation().getLat();
+        this.lng = v.getLocation().getLng();
+        try {
             details.setText(v.getPage().getPageInfo().getDescription());
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
-        try{
-        name.setText(v.getName());
-        }catch (Exception e){
+        try {
+            name.setText(v.getName());
+        } catch (Exception e) {
 
         }
-        try{
+        try {
             weblink.setText(v.getCanonicalUrl());
             weblink.setOnClickListener(this);
 
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
 
         }
-        try{
-            rating.setText("Rating "+v.getRating());
+        try {
+            rating.setText("Rating " + v.getRating());
 
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
-        try{
-            address.setText(v.getLocation().getFormattedAddress().get(0)+"\n"+
+        try {
+            address.setText(v.getLocation().getFormattedAddress().get(0) + "\n" +
                     v.getLocation().getFormattedAddress().get(1)
             );
 
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
-        try{
-            String phonenumber=v.getContact().getFormattedPhone()!=null ?v.getContact().getFacebookName(): "";
-            String facebookName=v.getContact().getFacebookName()!=null ? v.getContact().getFacebookName(): "" ;
-            String twitterName= v.getContact().getTwitter()!=null?v.getContact().getTwitter():" ";
-            phonenum.setText(phonenumber+"\n"+
-                    facebookName+"\n"+
+        try {
+            String phonenumber = v.getContact().getFormattedPhone() != null ? v.getContact().getFacebookName() : "";
+            String facebookName = v.getContact().getFacebookName() != null ? v.getContact().getFacebookName() : "";
+            String twitterName = v.getContact().getTwitter() != null ? v.getContact().getTwitter() : " ";
+            phonenum.setText(phonenumber + "\n" +
+                    facebookName + "\n" +
                     twitterName);
 
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
-        try{
-            price.setText("Currency:"+v.getPrice().getCurrency()+" \t "+"Price: "+v.getPrice().getMessage());
+        try {
+            price.setText("Currency:" + v.getPrice().getCurrency() + " \t " + "Price: " + v.getPrice().getMessage());
 
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
-        try{
-            regularhours.setText(v.getHours().getTimeframes().get(0).getDays()+": "+v.getHours().getTimeframes().get(0).getOpen().get(0).getRenderedTime());
-        }catch (NullPointerException e){
+        try {
+            regularhours.setText(v.getHours().getTimeframes().get(0).getDays() + ": " + v.getHours().getTimeframes().get(0).getOpen().get(0).getRenderedTime());
+        } catch (NullPointerException e) {
 
         }
         try {
 
-        }catch (Exception e){
-            weekendhours.setText(v.getHours().getTimeframes().get(1).getDays()+": "+v.getHours().getTimeframes().get(1).getOpen().get(0).getRenderedTime());
+        } catch (Exception e) {
+            weekendhours.setText(v.getHours().getTimeframes().get(1).getDays() + ": " + v.getHours().getTimeframes().get(1).getOpen().get(0).getRenderedTime());
 
         }
 //        weblink.setText(v.getCanonicalUrl());
@@ -205,12 +193,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.weblink){
-            try{
-            Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(weblink.getText().toString()));
-            startActivity(intent);}
-            catch (Exception e){
-                Toast.makeText(getActivity(),"Invalid URL.",Toast.LENGTH_SHORT).show();
+        if (v.getId() == R.id.weblink) {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(weblink.getText().toString()));
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Invalid URL.", Toast.LENGTH_SHORT).show();
             }
         }
 

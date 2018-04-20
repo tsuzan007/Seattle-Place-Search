@@ -1307,8 +1307,8 @@ public class ResponseDetail {
                 public static class PageInfoBean {
                     /**
                      * description : Serving up the best dumplings, noodles and sesame pancakes in New York City
-
-                     www.vanessas.com
+                     * <p>
+                     * www.vanessas.com
                      * banner : https://is1.4sqi.net/userpix/GUWJ2Q0M1C4JSXYH.jpg
                      * links : {"count":1,"items":[{"url":"http://vanessas.com"}]}
                      */

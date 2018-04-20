@@ -1,7 +1,6 @@
 package com.mark46.code.seattleplaces.Model.RetrofitComponents;
 
 
-
 public class FourSquareApiFailureEvent {
 
     private String onFailureResponse;

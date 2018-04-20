@@ -3,8 +3,6 @@ package com.mark46.code.seattleplaces.Model.RetrofitComponents;
 
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
 
-import java.util.List;
-
 /**
  * FourSquareApiEvent is a model class used by the FourSquareApiDataParser class to create an event
  * and update the UI depending on the Network Response.

@@ -2,7 +2,6 @@ package com.mark46.code.seattleplaces.Model.DaggerComponents;
 
 import android.content.Context;
 
-
 import com.mark46.code.seattleplaces.Model.RetrofitComponents.FourSquareApi;
 import com.mark46.code.seattleplaces.Model.RetrofitComponents.FourSquareApiDataParser;
 import com.mark46.code.seattleplaces.Utils.ConnectionUtils.CheckNetwork;

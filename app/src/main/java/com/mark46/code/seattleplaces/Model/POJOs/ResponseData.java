@@ -382,7 +382,7 @@ public class ResponseData {
             private boolean hasPerk;
             private VenuePageBean venuePage;
             private List<CategoriesBean> categories;
-            private boolean favourite=false;
+            private boolean favourite = false;
 
             public boolean isFavourite() {
                 return favourite;

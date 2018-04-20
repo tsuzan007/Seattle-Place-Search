@@ -18,8 +18,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.mark46.code.seattleplaces.Model.DaggerComponents.MyApplicationDaggerBuild;
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
@@ -38,13 +36,18 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
-
-import static android.support.v7.widget.SearchView.*;
+import static android.support.v7.widget.SearchView.GONE;
+import static android.support.v7.widget.SearchView.INVISIBLE;
+import static android.support.v7.widget.SearchView.VISIBLE;
 
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener, IAlertDialogs {
 
 
+    public static ResponseData responseData;
+    public static String ACTION_INTENT_FROM_SEARCHACTIVITY = " ACTION_INTENT_FROM_SEARCHACTIVITY";
+    @Inject
+    CheckNetwork checkNetwork;
     private FloatingActionButton floatingActionButton;
     private CardView cardView;
     private PresenterViewModel presenterViewModel;
@@ -53,16 +56,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private boolean network_connection = false;
     private TextView message;
     private ProgressBar progressBar;
-    public static ResponseData responseData;
-    public static String ACTION_INTENT_FROM_SEARCHACTIVITY=" ACTION_INTENT_FROM_SEARCHACTIVITY";
-
-
-
-
-
-
-    @Inject
-    CheckNetwork checkNetwork;
     private PlacesRecyclerViewAdapter placesRecyclerViewAdapter;
     private RecyclerView recyclerView;
 
@@ -70,26 +63,25 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        cardView=findViewById(R.id.cardView_Search);
-        floatingActionButton=findViewById(R.id.floatingActionButton_Map);
+        cardView = findViewById(R.id.cardView_Search);
+        floatingActionButton = findViewById(R.id.floatingActionButton_Map);
         floatingActionButton.setVisibility(View.GONE);
-        mSearchView=findViewById(R.id.searchView);
+        mSearchView = findViewById(R.id.searchView);
         mSearchView.setIconified(true);
-        message=findViewById(R.id.Searchmessage);
+        message = findViewById(R.id.Searchmessage);
         presenterViewModel = ViewModelProviders.of(this).get(PresenterViewModel.class);
         mainPresenter = presenterViewModel.getMainPresenter();
         floatingActionButton.setOnClickListener(this);
         mainPresenter.buildDagger();
         cardView.setOnClickListener(this);
         recyclerView = findViewById(R.id.listRecyclerView);
-        progressBar=findViewById(R.id.searchProgress);
+        progressBar = findViewById(R.id.searchProgress);
         progressBar.setVisibility(INVISIBLE);
         MyApplicationDaggerBuild.getMyApplicationDaggerBuild().getMyApplicationDaggerComponent().inject(this);
 
 
-
-
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -102,7 +94,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onResume() {
         super.onResume();
-        if(!network_connection){
+        if (!network_connection) {
             showSnackBarAlert("No Internet Connection. Please check your connection.");
         }
 
@@ -113,7 +105,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 progressBar.setVisibility(VISIBLE);
                 mainPresenter.startSearch(query);
                 InputMethodManager imm = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(
                         mSearchView.getWindowToken(), 0);
 
@@ -126,25 +118,20 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-        if(placesRecyclerViewAdapter!=null){
+        if (placesRecyclerViewAdapter != null) {
             placesRecyclerViewAdapter.notifyDataSetChanged();
         }
 
 
-
     }
-
-
 
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.e("...","EventBus stopped");
+        Log.e("...", "EventBus stopped");
         EventBus.getDefault().unregister(this);
     }
-
-
 
 
     /**
@@ -209,7 +196,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSuccessEvent(FourSquareApiEvent fourSquareApiEvent) {
-        responseData=fourSquareApiEvent.getListOfResponse();
+        responseData = fourSquareApiEvent.getListOfResponse();
         presenterViewModel.setVenueData(responseData.getResponse().getVenues());
         message.setVisibility(GONE);
         progressBar.setVisibility(GONE);
@@ -227,12 +214,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRecyclerViewItemClicked(CustomEvent customEvent){
-        if(customEvent.isRecyclerItemClicked()){
-            Intent intent=new Intent(this,DetailActivity.class);
+    public void onRecyclerViewItemClicked(CustomEvent customEvent) {
+        if (customEvent.isRecyclerItemClicked()) {
+            Intent intent = new Intent(this, DetailActivity.class);
             intent.setAction(ACTION_INTENT_FROM_SEARCHACTIVITY);
-            intent.putExtra("isfab",customEvent.isFavourite());
-            intent.putExtra("position",customEvent.getPosition());
+            intent.putExtra("isfab", customEvent.isFavourite());
+            intent.putExtra("position", customEvent.getPosition());
             startActivity(intent);
         }
 
@@ -248,11 +235,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     public void onFailureEvent(FourSquareApiFailureEvent FourSquareApiFailureEvent) {
         // Passing the Network Response to UI
         showSnackBarAlert("Internet connection is required to proceed.");
-       // mMainFragment.onFailureOpenNotifyApiResponse(FourSquareApiFailureEvent.getOnFailureResponse());
+        // mMainFragment.onFailureOpenNotifyApiResponse(FourSquareApiFailureEvent.getOnFailureResponse());
 
     }
-
-
 
 
 //    /**
@@ -301,18 +286,16 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 //                    }
 //                });
 
-   // }
-
-
+    // }
 
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.floatingActionButton_Map){
-            Intent intent=new Intent(SearchActivity.this,MapActivity.class);
+        if (v.getId() == R.id.floatingActionButton_Map) {
+            Intent intent = new Intent(SearchActivity.this, MapActivity.class);
             intent.setAction(ACTION_INTENT_FROM_SEARCHACTIVITY);
             startActivity(intent);
-        }else if(v.getId()==R.id.cardView_Search){
+        } else if (v.getId() == R.id.cardView_Search) {
             mSearchView.setIconified(false);
         }
     }

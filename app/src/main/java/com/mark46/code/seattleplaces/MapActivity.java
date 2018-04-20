@@ -3,8 +3,8 @@ package com.mark46.code.seattleplaces;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -18,41 +18,35 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.ClusterRenderer;
 import com.mark46.code.seattleplaces.Model.POJOs.MapItem;
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
 import com.mark46.code.seattleplaces.Presenter.MainPresenter;
 import com.mark46.code.seattleplaces.Utils.PresenterViewModel;
 
 import java.util.List;
-import java.util.Set;
 
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback,ClusterManager.OnClusterItemInfoWindowClickListener {
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback, ClusterManager.OnClusterItemInfoWindowClickListener {
 
+    public static String ACTION_INTENT_FROM_MAPACTIVITY = "ACTION_INTENT_FROM_MAPACTIVITY";
     private GoogleMap mMap;
     private ProgressBar progressBar;
     private TextView message;
     private MapItem clickedClusterItem;
-
     // Declare a variable for the cluster manager.
     private ClusterManager<MapItem> mClusterManager;
     private List<ResponseData.ResponseBean.VenuesBean> venueList;
     private PresenterViewModel presenterViewModel;
     private MainPresenter mainPresenter;
-    public static String ACTION_INTENT_FROM_MAPACTIVITY="ACTION_INTENT_FROM_MAPACTIVITY";
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_map);
-        progressBar=findViewById(R.id.progressBar_mapLoading);
-        message=findViewById(R.id.textView_mapLoading);
+        progressBar = findViewById(R.id.progressBar_mapLoading);
+        message = findViewById(R.id.textView_mapLoading);
         presenterViewModel = ViewModelProviders.of(this).get(PresenterViewModel.class);
         mainPresenter = presenterViewModel.getMainPresenter();
         mainPresenter.buildDagger();
@@ -60,10 +54,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 .findFragmentById(R.id.map);
         try {
             mapFragment.getMapAsync(this);
-        }catch (Exception e){
-            Log.e("....",e.toString());
+        } catch (Exception e) {
+            Log.e("....", e.toString());
         }
-        venueList=SearchActivity.responseData.getResponse().getVenues();
+        venueList = SearchActivity.responseData.getResponse().getVenues();
     }
 
 
@@ -127,40 +121,39 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
-    protected void addItems(String title, double lat, double lng,String id) {
-            MapItem offsetItem = new MapItem(lat, lng,title,id);
-            mClusterManager.addItem(offsetItem);
+    protected void addItems(String title, double lat, double lng, String id) {
+        MapItem offsetItem = new MapItem(lat, lng, title, id);
+        mClusterManager.addItem(offsetItem);
     }
 
 
-    private  void loadItems(){
-       Runnable runnable=new Runnable() {
-           @Override
-           public void run() {
-               int position=0;
-               for(ResponseData.ResponseBean.VenuesBean v:venueList){
-                   addItems(v.getName(),v.getLocation().getLat(),v.getLocation().getLng(),v.getId()+"_"+position);
-                    position=position+1;
-               }
+    private void loadItems() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                int position = 0;
+                for (ResponseData.ResponseBean.VenuesBean v : venueList) {
+                    addItems(v.getName(), v.getLocation().getLat(), v.getLocation().getLng(), v.getId() + "_" + position);
+                    position = position + 1;
+                }
 
 
-           }
-       };
-       new Thread(runnable).start();
+            }
+        };
+        new Thread(runnable).start();
     }
-
 
 
     @Override
     public void onClusterItemInfoWindowClick(ClusterItem clusterItem) {
-        String[] snippet=clusterItem.getSnippet().split("_");
-        String id=snippet[0];
-        String position=snippet[1];
-        Toast.makeText(this,position,Toast.LENGTH_SHORT).show();
+        String[] snippet = clusterItem.getSnippet().split("_");
+        String id = snippet[0];
+        String position = snippet[1];
+        Toast.makeText(this, position, Toast.LENGTH_SHORT).show();
         mainPresenter.requestDetailsAPIcall(id);
-        Intent intent=new Intent(this,DetailActivity.class);
+        Intent intent = new Intent(this, DetailActivity.class);
         intent.setAction(ACTION_INTENT_FROM_MAPACTIVITY);
-        intent.putExtra("position",Integer.parseInt(position));
+        intent.putExtra("position", Integer.parseInt(position));
         startActivity(intent);
 
     }
@@ -173,6 +166,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             myContentsView = getLayoutInflater().inflate(
                     R.layout.info_window, null);
         }
+
         @Override
         public View getInfoWindow(Marker marker) {
 

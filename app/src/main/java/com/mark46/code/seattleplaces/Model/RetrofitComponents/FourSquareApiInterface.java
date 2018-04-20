@@ -1,8 +1,6 @@
 package com.mark46.code.seattleplaces.Model.RetrofitComponents;
 
 
-
-
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseData;
 import com.mark46.code.seattleplaces.Model.POJOs.ResponseDetail;
 
@@ -18,9 +16,9 @@ import retrofit2.http.Query;
 
 public interface FourSquareApiInterface {
     @GET("search/?")
-    Call<ResponseData> getPlaces(@Query("client_id") String clientID, @Query("client_secret") String clientSecret,@Query("near") String address, @Query("query") String search, @Query("v") String date);
+    Call<ResponseData> getPlaces(@Query("client_id") String clientID, @Query("client_secret") String clientSecret, @Query("near") String address, @Query("query") String search, @Query("v") String date);
 
     @GET("{VENUE_ID}/?")
-    Call<ResponseDetail> getPlaceDetails(@Path("VENUE_ID") String venueID,@Query("client_id") String clientID, @Query("client_secret") String clientSecret,@Query("v") String date);
+    Call<ResponseDetail> getPlaceDetails(@Path("VENUE_ID") String venueID, @Query("client_id") String clientID, @Query("client_secret") String clientSecret, @Query("v") String date);
 
 }

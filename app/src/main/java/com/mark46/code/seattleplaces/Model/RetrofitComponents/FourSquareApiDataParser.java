@@ -1,7 +1,6 @@
 package com.mark46.code.seattleplaces.Model.RetrofitComponents;
 
 
-
 import android.util.Log;
 
 import com.mark46.code.seattleplaces.Model.DaggerComponents.MyApplicationDaggerBuild;
@@ -10,9 +9,7 @@ import com.mark46.code.seattleplaces.Model.POJOs.ResponseDetail;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -32,14 +29,12 @@ public class FourSquareApiDataParser {
     @Inject
     @Named("Real")
     Retrofit retrofitAdapter;
-    private FourSquareApiInterface FourSquareApiInterface;
-
-    private String clientid="PNGRBEBSB0FW5I1F54BGSKXFRKPOARABODX4XLERTUYSYUW0";
-    private String clientsecret="ACFA1DZH01XFFUNMN0VTQGXWVY22SSNXCWSC30DCFR3AWCRN";
-
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     Date date = new Date();
-    String v=sdf.format(date);
+    String v = sdf.format(date);
+    private FourSquareApiInterface FourSquareApiInterface;
+    private String clientid = "PNGRBEBSB0FW5I1F54BGSKXFRKPOARABODX4XLERTUYSYUW0";
+    private String clientsecret = "ACFA1DZH01XFFUNMN0VTQGXWVY22SSNXCWSC30DCFR3AWCRN";
 
 
     public FourSquareApiDataParser() {
@@ -58,7 +53,7 @@ public class FourSquareApiDataParser {
     public void getJSONDataFromAPI(String searchquery) {
 
         //
-        Call<ResponseData> call = FourSquareApiInterface.getPlaces(clientid,clientsecret,"Seattle,WA",searchquery,v);
+        Call<ResponseData> call = FourSquareApiInterface.getPlaces(clientid, clientsecret, "Seattle,WA", searchquery, v);
 
         // Making the network call
         call.enqueue(new Callback<ResponseData>() {
@@ -95,7 +90,7 @@ public class FourSquareApiDataParser {
     public void getPlaceDetailsFromAPI(String id) {
 
         //
-        Call<ResponseDetail> call = FourSquareApiInterface.getPlaceDetails(id,clientid,clientsecret,v);
+        Call<ResponseDetail> call = FourSquareApiInterface.getPlaceDetails(id, clientid, clientsecret, v);
 
         // Making the network call
         call.enqueue(new Callback<ResponseDetail>() {

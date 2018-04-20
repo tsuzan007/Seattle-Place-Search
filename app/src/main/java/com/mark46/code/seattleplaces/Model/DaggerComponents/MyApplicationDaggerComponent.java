@@ -1,8 +1,6 @@
 package com.mark46.code.seattleplaces.Model.DaggerComponents;
 
 
-
-
 import com.mark46.code.seattleplaces.Model.RetrofitComponents.FourSquareApiDataParser;
 import com.mark46.code.seattleplaces.Presenter.MainPresenter;
 import com.mark46.code.seattleplaces.SearchActivity;
